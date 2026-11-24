@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveSafe – Okos Autóbiztosítás Prototípus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #020617;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .prototype-container {
+            width: 1440px;
+            height: 900px;
+            background: #0b1220;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            border: 1px solid #1e2b45;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 248px;
+            height: 100%;
+            background: #0f1a2e;
+            border-right: 1px solid #1e2b45;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 36px;
+            padding-left: 8px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .brand-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .brand-subtitle {
+            font-size: 9px;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            height: 40px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .nav-item:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-item.active {
+            background: #1d3358;
+            color: #93c5fd;
+        }
+
+        .user-profile {
+            background: #14223b;
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 60px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .user-info .name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .user-info .points {
+            font-size: 12px;
+            color: #6ee7b7;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            height: 68px;
+            background: #0f1a2e;
+            border-bottom: 1px solid #1e2b45;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            width: 380px;
+            height: 36px;
+            background: #0b1220;
+            border: 1px solid #1e2b45;
+            border-radius: 10px;
+            padding: 0 16px;
+            color: #e2e8f0;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .points-badge {
+            background: #0c2a22;
+            border: 1px solid #14532d;
+            height: 36px;
+            padding: 0 18px;
+            border-radius: 10px;
+            color: #6ee7b7;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .sos-button {
+            background: #e11d48;
+            color: #fff;
+            border: none;
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .sos-button:hover {
+            background: #be123c;
+        }
+
+        /* Views */
+        .view {
+            display: none;
+            padding: 24px 32px;
+            height: calc(100% - 68px);
+            overflow-y: auto;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Overview Elements */
+        .welcome-banner {
+            background: #13306b;
+            border: 1px solid #1e3a6e;
+            border-radius: 20px;
+            padding: 26px 32px;
+            margin-bottom: 20px;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-banner h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .welcome-banner p {
+            font-size: 14px;
+            color: #cbd5e1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #0f1a2e;
+            border: 1px solid #1e2b45;
+            border-radius: 14px;
+            padding: 18px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .stat-card .sub {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-card {
+            background: #0f1a2e;
+            border: 1px solid #1e2b45;
+            border-radius: 14px;
+            height: 160px;
+            display: flex;
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .vehicle-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .car-thumb {
+            width: 150px;
+            height: 100%;
+            background: #1d3358;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #93c5fd;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .car-thumb.alt { background: #243b5c; }
+
+        .car-details {
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .car-details h3 {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .car-details p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .policy-tag {
+            background: #0b1220;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #93c5fd;
+            width: 100%;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .panel-card {
+            background: #0f1a2e;
+            border: 1px solid #1e2b45;
+            border-radius: 14px;
+            padding: 20px;
+            height: 230px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .maint-row {
+            background: #0b1220;
+            height: 44px;
+            border-radius: 10px;
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+
+        .progress-bg {
+            width: 100%;
+            height: 10px;
+            background: #0b1220;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 8px 0 14px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            border-radius: 5px;
+            transition: width 0.4s ease;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            height: 40px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-primary:hover { background: #2563eb; }
+
+        .btn-emerald {
+            background: #059669;
+            color: #fff;
+            border: none;
+            height: 40px;
+            padding: 0 24px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-emerald:hover { background: #047857; }
+
+        .btn-secondary {
+            background: #1e2b45;
+            color: #fff;
+            border: none;
+            height: 40px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-secondary:hover { background: #2c3e61; }
+
+        .btn-blue-soft {
+            background: #1d3358;
+            color: #93c5fd;
+            border: none;
+            height: 40px;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-blue-soft:hover { background: #254170; }
+
+        /* Modals */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(2, 6, 23, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            width: 640px;
+            background: #0f1a2e;
+            border: 1px solid #1e2b45;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #0b1220;
+            border: 1px solid #1e2b45;
+            border-radius: 8px;
+            padding: 11px 14px;
+            color: #e2e8f0;
+            font-size: 13px;
+            outline: none;
+        }
+
+        textarea.form-input {
+            height: 80px;
+            resize: none;
+        }
+
+        .upload-box {
+            width: 100%;
+            height: 44px;
+            background: #0b1220;
+            border: 1px dashed #1e2b45;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .upload-box:hover { border-color: #3b82f6; color: #fff; }
+
+        /* Toast notification */
+        .toast {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            background: #0c2a22;
+            border: 1px solid #14532d;
+            color: #6ee7b7;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 200;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="prototype-container">
+    <!-- Bal oldali menü -->
+    <div class="sidebar">
+        <div class="brand-container">
+            <div class="brand-icon">DS</div>
+            <div>
+                <div class="brand-title">DriveSafe</div>
+                <div class="brand-subtitle">OKOS AUTÓBIZTOSÍTÁS</div>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" data-tab="overview">Áttekintés</div>
+            <div class="nav-item" data-tab="vehicles">Járműveim</div>
+            <div class="nav-item" data-tab="claims">Káresemények &amp; SOS</div>
+            <div class="nav-item" data-tab="rewards">BiztonságPontok</div>
+            <div class="nav-item" data-tab="policies">Kötvények</div>
+            <div class="nav-item" data-tab="maintenance">Karbantartás</div>
+            <div class="nav-item" data-tab="payments">Befizetések</div>
+        </div>
+
+        <div class="user-profile">
+            <div class="user-avatar">VB</div>
+            <div class="user-info">
+                <div class="name">Varga Botond</div>
+                <div class="points" id="sidebarPoints">1 250 pont</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jobb oldali fő tartalom -->
+    <div class="main-content">
+        <!-- Fejléc -->
+        <div class="header">
+            <input type="text" id="globalSearch" class="search-input" placeholder="Keresés rendszám, kötvény…">
+            <div class="header-right">
+                <div class="points-badge" id="headerPoints" onclick="switchTab('rewards')">1 250 BiztonságPont</div>
+                <button class="sos-button" onclick="openModal('sosModal')">SOS káresemény bejelentése</button>
+            </div>
+        </div>
+
+        <!-- 1. FÜL: Áttekintés -->
+        <div id="view-overview" class="view active">
+            <div class="welcome-banner">
+                <h1>Üdv újra, Varga Botond!</h1>
+                <p>Minden járműved biztonságban van. 1 karbantartási emlékeztetőd esedékes.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Regisztrált járművek</div>
+                    <div class="value" id="statVehCount">2 db</div>
+                    <div class="sub">Mindegyik aktív</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Aktív kötvények</div>
+                    <div class="value" id="statPolCount">2 db</div>
+                    <div class="sub">KASZKÓ + KGFB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">BiztonságPont egyenleg</div>
+                    <div class="value" style="color: #6ee7b7;" id="statPoints">1 250 P</div>
+                    <div class="sub">15% kedvezményre váltható</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Következő szerviz</div>
+                    <div class="value" style="color: #fcd34d;">Olajcsere</div>
+                    <div class="sub">BMW M3 · 11 nap múlva</div>
+                </div>
+            </div>
+
+            <div class="vehicles-grid" id="overviewVehiclesGrid"></div>
+
+            <div class="bottom-grid">
+                <div class="panel-card">
+                    <div class="panel-title">Közelgő karbantartások</div>
+                    <div class="maint-row">
+                        <span>Éves olaj- és szűrőcsere · 2026-11-20</span>
+                        <span style="color: #fcd34d; font-weight: 600;">+150 pont</span>
+                    </div>
+                    <div class="maint-row">
+                        <span>Fékfolyadék ellenőrzés · 2026-12-15</span>
+                        <span style="color: #fcd34d; font-weight: 600;">+80 pont</span>
+                    </div>
+                </div>
+
+                <div class="panel-card" style="justify-content: space-between;">
+                    <div>
+                        <div class="panel-title">
+                            <span>BiztonságPont haladás</span>
+                            <span style="color: #6ee7b7; font-size: 13px;" id="progressText">1 250 / 1 500</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" id="progressBar" style="width: 83%;"></div>
+                        </div>
+                        <p style="font-size: 12px; color: #94a3b8;" id="progressSub">Még 250 pont az ingyenes gumicseréhez.</p>
+                    </div>
+                    <div>
+                        <button class="btn-emerald" style="width: 150px;" onclick="switchTab('rewards')">Beváltás</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. FÜL: Járműveim -->
+        <div id="view-vehicles" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Gépjárműveim</h1>
+                    <p style="color: #94a3b8; font-size: 14px;">Regisztrált járművek és technikai adatai</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('addVehicleModal')">+ Új autó hozzáadása</button>
+            </div>
+            <div id="vehiclesList" style="display: flex; flex-direction: column; gap: 18px;"></div>
+        </div>
+
+        <!-- 3. FÜL: Káresemények & SOS -->
+        <div id="view-claims" class="view">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div>
+                    <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Káresemények &amp; SOS</h1>
+                    <p style="color: #94a3b8; font-size: 14px;">Bejelentett kárügyek és státuszuk</p>
+                </div>
+                <button class="sos-button" style="height: 40px; padding: 0 24px;" onclick="openModal('sosModal')">DriveSafe SOS bejelentés</button>
+            </div>
+            <div id="claimsList" style="display: flex; flex-direction: column; gap: 16px;"></div>
+        </div>
+
+        <!-- 4. FÜL: BiztonságPontok -->
+        <div id="view-rewards" class="view">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">BiztonságPontok &amp; Kedvezmények</h1>
+                <p style="color: #94a3b8; font-size: 14px;">Gyűjts pontokat biztonságos vezetéssel és karbantartással</p>
+            </div>
+            <div id="rewardsGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;"></div>
+        </div>
+
+        <!-- 5. FÜL: Kötvények -->
+        <div id="view-policies" class="view">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Aktív Kötvények</h1>
+                <p style="color: #94a3b8; font-size: 14px;">Biztosítási szerződések és fedezeti adatok</p>
+            </div>
+            <div id="policiesList" style="display: flex; flex-direction: column; gap: 16px;"></div>
+        </div>
+
+        <!-- 6. FÜL: Karbantartás -->
+        <div id="view-maintenance" class="view">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Szerviz &amp; Karbantartási napló</h1>
+                <p style="color: #94a3b8; font-size: 14px;">Igazolt szervizekért extra BiztonságPontok járnak</p>
+            </div>
+            <div class="stat-card" style="height: auto; padding: 24px; gap: 16px;">
+                <div class="maint-row" style="margin: 0; height: 56px;">
+                    <div>
+                        <strong>Éves olaj- és szűrőcsere</strong> <span style="color: #94a3b8;">· BMW M3 Competition (ABC-123) · 2026-11-20</span>
+                    </div>
+                    <button class="btn-emerald" style="height: 32px; padding: 0 14px; font-size: 12px;" onclick="completeMaintenance(this, 150)">Elvégezve (+150 P)</button>
+                </div>
+                <div class="maint-row" style="margin: 0; height: 56px;">
+                    <div>
+                        <strong>Fékfolyadék ellenőrzés</strong> <span style="color: #94a3b8;">· VW Golf 7 TSI (XYZ-789) · 2026-12-15</span>
+                    </div>
+                    <button class="btn-emerald" style="height: 32px; padding: 0 14px; font-size: 12px;" onclick="completeMaintenance(this, 80)">Elvégezve (+80 P)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. FÜL: Befizetések -->
+        <div id="view-payments" class="view">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 28px; font-weight: 800; margin-bottom: 4px;">Díjfizetések &amp; Számlák</h1>
+                <p style="color: #94a3b8; font-size: 14px;">Negyedéves és éves biztosítási díjak egyenlege</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="stat-card" style="height: auto; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-size: 16px; font-weight: 800;">KASZKÓ Prémium Extra – 2026 Q4</div>
+                        <div style="font-size: 13px; color: #94a3b8; margin-top: 4px;">BMW M3 Competition (ABC-123) · Határidő: 2026-11-10</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span style="font-size: 16px; font-weight: 800;">148 500 Ft</span>
+                        <span style="background: #0c2a22; color: #6ee7b7; padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;">Rendezve</span>
+                    </div>
+                </div>
+                <div class="stat-card" style="height: auto; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-size: 16px; font-weight: 800;">KGFB Standard + Önrész Védő – 2026 Q4</div>
+                        <div style="font-size: 13px; color: #94a3b8; margin-top: 4px;">VW Golf 7 TSI (XYZ-789) · Határidő: 2026-12-01</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <span style="font-size: 16px; font-weight: 800;">24 900 Ft</span>
+                        <button class="btn-primary" style="height: 34px; font-size: 12px;" onclick="payInvoice(this)">Befizetés most</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: SOS Káresemény bejelentő -->
+    <div id="sosModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 style="font-size: 16px; font-weight: 800; color: #fb7185;">DriveSafe SOS – Káresemény bejelentő</h2>
+                <button class="close-btn" onclick="closeModal('sosModal')">✕</button>
+            </div>
+            <p style="font-size: 12px; color: #93c5fd; margin-bottom: 20px; font-weight: 600;">1. Helyszín &amp; Autó &nbsp;&nbsp; 2. Sérülések &nbsp;&nbsp; 3. Küldés</p>
+            
+            <div class="form-group">
+                <label>Érintett jármű</label>
+                <select id="sosVehicleSelect" class="form-input"></select>
+            </div>
+            <div class="form-group">
+                <label>Pontos helyszín</label>
+                <input type="text" id="sosLocation" class="form-input" value="Budapest, Petőfi híd pesti hídfő">
+            </div>
+            <div class="form-group">
+                <label>Esemény leírása</label>
+                <textarea id="sosDesc" class="form-input">Parkolási koccanás, jobb első lökhárító sérült.</textarea>
+            </div>
+            <div class="upload-box" id="uploadBox" onclick="simulateUpload()">
+                Kattints a fotók feltöltéséhez
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn-secondary" onclick="closeModal('sosModal')">Vissza</button>
+                <button class="sos-button" style="height: 40px; padding: 0 24px;" onclick="submitSosClaim()">Káresemény beküldése</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Új autó hozzáadása -->
+    <div id="addVehicleModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 style="font-size: 16px; font-weight: 800; color: #93c5fd;">+ Új jármű regisztrálása</h2>
+                <button class="close-btn" onclick="closeModal('addVehicleModal')">✕</button>
+            </div>
+            <div class="form-group">
+                <label>Márka és típus</label>
+                <input type="text" id="newCarName" class="form-input" placeholder="pl. Audi A4 1.9 TDI">
+            </div>
+            <div class="form-group">
+                <label>Rendszám</label>
+                <input type="text" id="newCarPlate" class="form-input" placeholder="pl. JKL-456">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="form-group">
+                    <label>Évjárat</label>
+                    <input type="number" id="newCarYear" class="form-input" value="2022">
+                </div>
+                <div class="form-group">
+                    <label>Becsült érték (Ft)</label>
+                    <input type="text" id="newCarValue" class="form-input" value="8 500 000 Ft">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Választott biztosítási csomag</label>
+                <select id="newCarPolicy" class="form-input">
+                    <option value="KASZKÓ Prémium Extra">KASZKÓ Prémium Extra</option>
+                    <option value="KGFB Standard + Önrész Védő">KGFB Standard + Önrész Védő</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                <button class="btn-secondary" onclick="closeModal('addVehicleModal')">Mégse</button>
+                <button class="btn-primary" onclick="addNewVehicle()">Jármű mentése</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Részletek / Módosítás -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="infoModalTitle" style="font-size: 16px; font-weight: 800; color: #fff;">Részletek</h2>
+                <button class="close-btn" onclick="closeModal('infoModal')">✕</button>
+            </div>
+            <div id="infoModalBody" style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 24px;"></div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn-primary" onclick="closeModal('infoModal')">Bezárás</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Értesítő sáv (Toast) -->
+    <div id="toast" class="toast"></div>
+</div>
+
+<script>
+    let points = 1250;
+
+    let vehicles = [
+        { id: 0, name: "BMW M3 Competition", plate: "ABC-123", year: 2021, value: "24 500 000 Ft", policy: "KASZKÓ Prémium Extra", color: "#1d3358" },
+        { id: 1, name: "VW Golf 7 TSI", plate: "XYZ-789", year: 2018, value: "5 200 000 Ft", policy: "KGFB Standard + Önrész Védő", color: "#243b5c" }
+    ];
+
+    let claims = [
+        { id: "KAR-2026-0891", car: "BMW M3", date: "2026-10-14", location: "Budapest, Váci út 45.", amount: "420 000 Ft", status: "Elbírálás alatt", pending: true },
+        { id: "KAR-2025-0142", car: "VW Golf 7", date: "2025-06-20", location: "Székesfehérvár, M7 52km", amount: "185 000 Ft", status: "Kifizetve", pending: false }
+    ];
+
+    let rewards = [
+        { id: 0, title: "15% kedvezmény a következő KASZKÓ díjból", cost: 1000, redeemed: false },
+        { id: 1, title: "Ingyenes éves gumicsere", cost: 1500, redeemed: false },
+        { id: 2, title: "20% autókozmetika kupon", cost: 800, redeemed: false }
+    ];
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const tab = item.getAttribute('data-tab');
+            switchTab(tab);
+        });
+    });
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.classList.toggle('active', el.getAttribute('data-tab') === tabId);
+        });
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const targetView = document.getElementById('view-' + tabId);
+        if (targetView) targetView.classList.add('active');
+    }
+
+    function updatePointsUI() {
+        const formatted = points.toLocaleString('hu-HU');
+        document.getElementById('sidebarPoints').textContent = formatted + ' pont';
+        document.getElementById('headerPoints').textContent = formatted + ' BiztonságPont';
+        document.getElementById('statPoints').textContent = formatted + ' P';
+        document.getElementById('progressText').textContent = formatted + ' / 1 500';
+
+        const pct = Math.min(100, Math.round((points / 1500) * 100));
+        document.getElementById('progressBar').style.width = pct + '%';
+
+        const diff = Math.max(0, 1500 - points);
+        document.getElementById('progressSub').textContent = diff > 0
+            ? `Még ${diff} pont az ingyenes gumicseréhez.`
+            : 'Elérted az ingyenes gumicsere szintet!';
+
+        renderRewards();
+    }
+
+    function renderVehicles(filter = "") {
+        const q = filter.toLowerCase();
+        const filtered = vehicles.filter(v =>
+            v.name.toLowerCase().includes(q) ||
+            v.plate.toLowerCase().includes(q) ||
+            v.policy.toLowerCase().includes(q)
+        );
+
+        document.getElementById('statVehCount').textContent = vehicles.length + ' db';
+        document.getElementById('statPolCount').textContent = vehicles.length + ' db';
+
+        const ovGrid = document.getElementById('overviewVehiclesGrid');
+        ovGrid.innerHTML = filtered.slice(0, 2).map(v => `
+            <div class="vehicle-card" onclick="switchTab('vehicles')">
+                <div class="car-thumb" style="background: ${v.color};">${v.plate}</div>
+                <div class="car-details">
+                    <div>
+                        <h3>${v.name}</h3>
+                        <p>${v.plate} · ${v.year} · ${v.value}</p>
+                    </div>
+                    <div class="policy-tag">${v.policy}</div>
+                </div>
+            </div>
+        `).join('');
+
+        const vList = document.getElementById('vehiclesList');
+        vList.innerHTML = filtered.map(v => `
+            <div class="vehicle-card" style="height: 160px; cursor: default; justify-content: space-between; align-items: center; padding: 20px;">
+                <div style="display: flex; gap: 24px; align-items: center;">
+                    <div class="car-thumb" style="width: 200px; height: 120px; border-radius: 12px; background: ${v.color}; font-size: 16px;">${v.plate}</div>
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">${v.name}</h3>
+                        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;">${v.plate} · ${v.year} · ${v.value}</p>
+                        <div style="font-size: 13px; font-weight: 600; color: #93c5fd;">Kötvény: ${v.policy}</div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 12px; width: 220px;">
+                    <button class="btn-secondary" onclick="openVehicleEdit(${v.id})">Adatok módosítása</button>
+                    <button class="btn-blue-soft" onclick="openPolicyDetails(${v.id})">Kötvény részletei</button>
+                </div>
+            </div>
+        `).join('');
+
+        const pList = document.getElementById('policiesList');
+        pList.innerHTML = vehicles.map((v, idx) => `
+            <div class="stat-card" style="height: auto; flex-direction: row; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 16px; font-weight: 800; color: #93c5fd;">KOT-2026-00${idx + 1} · ${v.policy}</div>
+                    <div style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Biztosított jármű: ${v.name} (${v.plate}) · Érték: ${v.value}</div>
+                </div>
+                <button class="btn-blue-soft" onclick="openPolicyDetails(${v.id})">Kötvény megtekintése</button>
+            </div>
+        `).join('');
+
+        const sel = document.getElementById('sosVehicleSelect');
+        sel.innerHTML = vehicles.map(v => `<option value="${v.name}">${v.name} (${v.plate})</option>`).join('');
+    }
+
+    function renderClaims() {
+        const list = document.getElementById('claimsList');
+        list.innerHTML = claims.map(c => `
+            <div class="stat-card" style="height: 130px; padding: 22px 24px; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <div style="font-size: 16px; font-weight: 800; color: #93c5fd; margin-bottom: 4px;">${c.id}</div>
+                        <div style="font-size: 13px; color: #94a3b8;">${c.car} · ${c.date}</div>
+                    </div>
+                    <div style="background: ${c.pending ? '#4a3510' : '#0c2a22'}; color: ${c.pending ? '#fcd34d' : '#6ee7b7'}; padding: 5px 14px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                        ${c.status}
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; color: #e2e8f0;">Helyszín: ${c.location}</span>
+                    <span style="font-size: 14px; font-weight: 800; color: #6ee7b7;">Igényelt: ${c.amount}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function renderRewards() {
+        const grid = document.getElementById('rewardsGrid');
+        grid.innerHTML = rewards.map(r => {
+            const canAfford = points >= r.cost && !r.redeemed;
+            let btnText = r.redeemed ? "Beváltva ✓" : (canAfford ? "Kupon beváltása" : "Kevés a pont");
+            let btnClass = canAfford ? "btn-emerald" : "btn-secondary";
+            let btnStyle = !canAfford ? "color: #94a3b8; cursor: not-allowed; width: 100%;" : "width: 100%;";
+
+            return `
+                <div class="stat-card" style="height: 240px; padding: 20px; justify-content: space-between;">
+                    <div>
+                        <div style="width: 48px; height: 48px; background: #0c2a22; border-radius: 12px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; color: #6ee7b7; font-weight: 800;">★</div>
+                        <h3 style="font-size: 15px; font-weight: 800; line-height: 1.4;">${r.title}</h3>
+                    </div>
+                    <div>
+                        <div style="font-size: 26px; font-weight: 800; color: #6ee7b7; margin-bottom: 14px;">${r.cost} Pont</div>
+                        <button class="${btnClass}" style="${btnStyle}" onclick="redeemReward(${r.id})">${btnText}</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function redeemReward(id) {
+        const r = rewards.find(x => x.id === id);
+        if (!r || r.redeemed) return;
+        if (points < r.cost) {
+            showToast("Nincs elegendő BiztonságPontod ehhez a kuponhoz!");
+            return;
+        }
+        points -= r.cost;
+        r.redeemed = true;
+        updatePointsUI();
+        showToast(`Sikeres beváltás: ${r.title}!`);
+    }
+
+    function submitSosClaim() {
+        const car = document.getElementById('sosVehicleSelect').value;
+        const loc = document.getElementById('sosLocation').value || "Ismeretlen helyszín";
+        const newId = "KAR-2026-0" + Math.floor(900 + Math.random() * 99);
+
+        claims.unshift({
+            id: newId,
+            car: car.split(' (')[0],
+            date: new Date().toISOString().split('T')[0],
+            location: loc,
+            amount: "Vizsgálat alatt",
+            status: "Elbírálás alatt",
+            pending: true
+        });
+
+        renderClaims();
+        closeModal('sosModal');
+        switchTab('claims');
+        showToast(`SOS káresemény (${newId}) sikeresen rögzítve!`);
+    }
+
+    function addNewVehicle() {
+        const name = document.getElementById('newCarName').value.trim();
+        const plate = document.getElementById('newCarPlate').value.trim().toUpperCase();
+        const year = document.getElementById('newCarYear').value;
+        const value = document.getElementById('newCarValue').value;
+        const policy = document.getElementById('newCarPolicy').value;
+
+        if (!name || !plate) {
+            showToast("Kérlek add meg az autó típusát és rendszámát!");
+            return;
+        }
+
+        vehicles.push({
+            id: vehicles.length,
+            name,
+            plate,
+            year,
+            value,
+            policy,
+            color: "#1e3a6e"
+        });
+
+        renderVehicles();
+        closeModal('addVehicleModal');
+        showToast(`${name} (${plate}) hozzáadva a járműveidhez!`);
+    }
+
+    function openVehicleEdit(id) {
+        const v = vehicles.find(x => x.id === id);
+        document.getElementById('infoModalTitle').textContent = `${v.name} – Technikai adatok`;
+        document.getElementById('infoModalBody').innerHTML = `
+            <p><strong>Rendszám:</strong> ${v.plate}</p>
+            <p><strong>Gyártási év:</strong> ${v.year}</p>
+            <p><strong>Biztosítási érték:</strong> ${v.value}</p>
+            <p><strong>Telematikai modul:</strong> Aktív (GPS + Gyorsulásmérő)</p>
+        `;
+        openModal('infoModal');
+    }
+
+    function openPolicyDetails(id) {
+        const v = vehicles.find(x => x.id === id);
+        document.getElementById('infoModalTitle').textContent = `Kötvény részletei – ${v.policy}`;
+        document.getElementById('infoModalBody').innerHTML = `
+            <p><strong>Biztosított gépjármű:</strong> ${v.name} (${v.plate})</p>
+            <p><strong>Fedezet:</strong> Teljes körű törés-, lopás- és elemi kár védelem</p>
+            <p><strong>Önrész:</strong> 0 Ft (BiztonságPont kedvezménnyel)</p>
+            <p><strong>Asszisztencia:</strong> 0–24 órás európai autómentés</p>
+        `;
+        openModal('infoModal');
+    }
+
+    function completeMaintenance(btn, pts) {
+        btn.disabled = true;
+        btn.textContent = "Igazolva ✓";
+        btn.style.background = "#1e2b45";
+        btn.style.color = "#94a3b8";
+        points += pts;
+        updatePointsUI();
+        showToast(`Karbantartás igazolva! +${pts} BiztonságPont jóváírva.`);
+    }
+
+    function payInvoice(btn) {
+        btn.outerHTML = `<span style="background: #0c2a22; color: #6ee7b7; padding: 6px 14px; border-radius: 10px; font-size: 12px; font-weight: 600;">Rendezve</span>`;
+        showToast("A biztosítási díj befizetése sikeres volt!");
+    }
+
+    function simulateUpload() {
+        const box = document.getElementById('uploadBox');
+        box.textContent = "✓ 2 db sérülésfotó csatolva (serules_01.jpg, serules_02.jpg)";
+        box.style.color = "#6ee7b7";
+        box.style.borderColor = "#14532d";
+    }
+
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    document.getElementById('globalSearch').addEventListener('input', (e) => {
+        renderVehicles(e.target.value);
+    });
+
+    renderVehicles();
+    renderClaims();
+    updatePointsUI();
+</script>
+
+</body>
+</html>
